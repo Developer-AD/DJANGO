@@ -11,15 +11,26 @@
 
 <body>
     <div class="navbar">
-        <a href="#home">Home</a>
-        <a href="#services">Services</a>
-        <a href="#contact">Contact</a>
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/">Login</a>
+        <a href="/register/">Register</a>
         <a href="#about">About</a>
+
+        <a href="/logout/">Logout</a>
     </div>
+    
+    
+    <script type="application/json" id="django-messages">
+            [{% for message in messages %}"{{ message }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
+    </script>
+
+    
     <div class="content">
+        <center><h1>Welcome, {{request.user}}</h1></center>
         <h1>Welcome to the Dashboard</h1>
         <p>This is your dashboard.</p>
     </div>
+    <script src="{% static 'js/scripts.js' %}"></script>
 </body>
 
 </html>

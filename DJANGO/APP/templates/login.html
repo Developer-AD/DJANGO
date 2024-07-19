@@ -10,16 +10,23 @@
 </head>
 
 <body>
+    <script type="application/json" id="django-messages">
+                [{% for message in messages %}"{{ message }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
+    </script>
+
     <div class="container">
         <h2>Login</h2>
-        <form action="dashboard.html">
+        <form method="post">
+            {% csrf_token %}
             <label for="username">Username</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
             <button type="submit">Login</button>
-            <p>Don't have an account? <a href="register.html">Register here</a></p>
+            <p>Don't have an account? <a href="/register/">Register here</a></p>
         </form>
+
+        <script src="{% static 'js/scripts.js' %}"></script>
     </div>
 </body>
 

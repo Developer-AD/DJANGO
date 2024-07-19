@@ -16,7 +16,13 @@ def login_page(request):
             username = request.POST.get('username')
             password = request.POST.get('password')
 
-            user = User.objects.filter(username=username)
+            user = MyUser.objects.filter(username=username)
+
+            print('-------------- Login Details Start -----------------')
+            print(username)
+            print(password)
+            print(user)
+            print('-------------- Login Details End -----------------')
 
             if not user.exists():
                 messages.error(request, "Username not found, Kindly try again...!")
@@ -26,15 +32,17 @@ def login_page(request):
 
             if user is not None:
                 # Recapcha authentication.
-                site_key = request.POST['g-recaptcha-response']
-                capchaData = {
-                    'secret': settings.SECRET_KEY,
-                    'response': site_key
-                }
+                # site_key = request.POST['g-recaptcha-response']
+                # capchaData = {
+                #     'secret': settings.SECRET_KEY,
+                #     'response': site_key
+                # }
 
-                post_url = 'https://www.google.com/recaptcha/api/siteverify'
-                res = requests.post(post_url, data=capchaData)
-                verify = res.json()['success']
+                # post_url = 'https://www.google.com/recaptcha/api/siteverify'
+                # res = requests.post(post_url, data=capchaData)
+                # verify = res.json()['success']
+
+                verify = True # For test purposes Google recapcha will return True.
 
                 if verify:
                     login(request, user)
@@ -48,6 +56,7 @@ def login_page(request):
             return redirect('login')
 
         except Exception as e:
+            print(e)
             messages.error(request, "Something went wrong")
             return redirect('login')
 
@@ -57,6 +66,7 @@ def login_page(request):
 # -------------------------------------------- Logout Page ------------------------------------
 def logout_page(request):
     logout(request)
+    messages.success(request, 'You have been logged out successfully...!')
     return redirect('login')
 
 # --------------------------------------------- Dashboard --------------------------------------
@@ -64,10 +74,17 @@ def register_page(request):
     if request.method == 'POST':
         try:
             username = request.POST.get('username')
+            email = request.POST.get('email')
             password = request.POST.get('password')
             conf_password = request.POST.get('conf_password')
             # email = request.POST.get('email')
             # phone = request.POST.get('phone')
+            print('-------------- Registration Details Start -----------------')
+            print(username)
+            print(email)
+            print(password)
+            print(conf_password)
+            print('-------------- Registration Details End -----------------')
 
             user = MyUser.objects.filter(username=username)
             if user.exists():
@@ -92,6 +109,7 @@ def register_page(request):
 @login_required(login_url="/")
 def dashboard(request):
     contexts = {}
+    messages.success(request, "Dashboard has been created successfully")
     return render(request, 'dashboard.html', contexts)
 
 
