@@ -6,12 +6,14 @@ from . import views
 urlpatterns = [
     # path('send-email/', views.send_email, name="send_email"),
 
-    path('', views.login_page, name="login"),
+    path('', views.dashboard, name="dashboard"),
+    path('login/', views.login_page, name="login"),
     path('register/', views.register_page, name="register"),
     path('logout/', views.logout_page, name="logout"),
-    path('dashboard/', views.dashboard, name="dashboard"),
-    # path('create/', views.create, name="create"),
-    # path('delete/<int:id>/', views.delete),
-    # path('edit/<int:id>/', views.edit),
+
+# ----------------------- Student routes -----------------------
+    path('student-add/', views.student_add, name="student_add"),
+    path('student-edit/<int:id>/', views.student_edit,),
+    path('student-delete/<int:id>/', views.student_delete),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

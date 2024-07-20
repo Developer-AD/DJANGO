@@ -26,3 +26,15 @@ class MyUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class Student(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True)
+    age = models.PositiveIntegerField(null=True, blank=True)
+    email = models.EmailField(max_length=100, null=True, blank=True)
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    photo = models.ImageField(upload_to='Profile', blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+    

@@ -106,51 +106,73 @@ def register_page(request):
     return render(request, 'register.html')
 
 # --------------------------------------------- Dashboard --------------------------------------
-@login_required(login_url="/")
+# @login_required(login_url="/")
 def dashboard(request):
-    contexts = {}
-    messages.success(request, "Dashboard has been created successfully")
+    students = Student.objects.all()
+    contexts = {'students': students}
+    # messages.success(request, "Welcome to Student Dashboard")
     return render(request, 'dashboard.html', contexts)
 
 
 # ------------ Upload Data Starts ------------------
-@login_required(login_url="/")
-def create(request):
+@login_required(login_url="/login")
+def student_add(request):
     if request.method == 'POST':
-        db_name = request.POST.get('db_name')
-        db_file = request.FILES.get('db_file')
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        age = request.POST.get('age')
+        phone = request.POST.get('phone')
+        photo = request.FILES.get('photo')
 
-        current_date = datetime.now().date()
+        print('-------------- Student Details Start -----------------')
+        print(name)
+        print(email)
+        print(age)
+        print(phone)
+        print(photo)
+        print('-------------- Student Details End -----------------')
 
-        Model.objects.create()
+        Student.objects.create(name=name, email=email, age=age, phone=phone, photo=photo)
+        messages.success(request, "Student record has been created successfully")
 
-        return redirect('create')
-    return render(request, 'create.html', contexts)
+        return redirect('/')
+    return render(request, 'student_add.html')
 
 
+# ------------ Upload Data Starts ------------------
 @login_required(login_url="/")
-def delete_contact(request, id):
-    db = Database.objects.get(id=id)
-    db.delete()
-    return redirect('create_contact')
-
-
-@login_required(login_url="/")
-def edit_contact(request, id):
-    db = Database.objects.get(id=id)
+def student_edit(request, id):
+    student = Student.objects.get(id=id)
     if request.method == 'POST':
-        db_name = request.POST.get('db_name')
-        db_file = request.FILES.get('db_file')
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        age = request.POST.get('age')
+        phone = request.POST.get('phone')
+        photo = request.FILES.get('photo')
 
-        if db_file:
-            strn_data, data_records = get_excel_data(db_file)
-            db.db_data = strn_data
-            db.db_records = data_records
+        print('-------------- Student Update Details Start ----------------')
+        print(name)
+        print(email)
+        print(age)
+        print(phone)
+        print(photo)
+        print('-------------- Student Update Details End -----------------')
 
-        current_date = datetime.now().date()
-        db.db_name = db_name
-        db.creation_date = current_date
-        db.save()
-        return redirect('create_contact')
+        student.name = name
+        student.email = email
+        student.age = age
+        student.phone = phone
+        student.photo = photo
+        student.save()
+        messages.success(request, "Student record has been updated successfully")
 
-    return HttpResponse('Edit Data')
+        return redirect('dashboard')
+    return render(request, 'student_edit.html', {'student': student})
+
+
+@login_required(login_url="/")
+def student_delete(request, id):
+    student = Student.objects.get(id=id)
+    student.delete()
+    messages.success(request, "Student record has been deleted successfully")
+    return redirect('dashboard')
