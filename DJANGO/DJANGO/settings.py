@@ -187,4 +187,6 @@ SITE_KEY = '6LeYX9kpAAAAAKyrJ_LDIsh6GbaDMyol6luib8v9'
 SECRET_KEY = '6LeYX9kpAAAAANzL9KJWyaPmH4e98HJmyV4l3akL'
 # # ------------------ Google Recaptcha Ends --------------------
 
+LOGIN_URL = '/login/'
+
 # # ************************************ ADDED_CODE_END **************************************

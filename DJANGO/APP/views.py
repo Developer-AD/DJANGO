@@ -1,17 +1,27 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import *
 from django.conf import settings
 from django.contrib import messages
 import requests
 from datetime import datetime
 
+from django.views import View
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+# ------------------------- New Libraries ------------------------
+from pytube import *
+
 
 # -------------------------------------------- Loging Page ------------------------------------
-def login_page(request):
-    if request.method == 'POST':
+class Login(View):
+    def get(self, request):
+        return render(request, 'login.html', {'site_key': settings.SITE_KEY})
+
+    def post(self, request):
         try:
             username = request.POST.get('username')
             password = request.POST.get('password')
@@ -60,8 +70,6 @@ def login_page(request):
             messages.error(request, "Something went wrong")
             return redirect('login')
 
-    return render(request, 'login.html', {'site_key': settings.SITE_KEY})
-
 
 # -------------------------------------------- Logout Page ------------------------------------
 def logout_page(request):
@@ -70,8 +78,11 @@ def logout_page(request):
     return redirect('login')
 
 # --------------------------------------------- Dashboard --------------------------------------
-def register_page(request):
-    if request.method == 'POST':
+class Register(View):
+    def get(self, request):
+        return render(request, 'register.html')
+
+    def post(self, request):
         try:
             username = request.POST.get('username')
             email = request.POST.get('email')
@@ -103,15 +114,28 @@ def register_page(request):
             messages.error(request, "Something went wrong")
             return redirect('register')
             
-    return render(request, 'register.html')
+    
 
 # --------------------------------------------- Dashboard --------------------------------------
-# @login_required(login_url="/")
-def dashboard(request):
-    students = Student.objects.all()
-    contexts = {'students': students}
-    # messages.success(request, "Welcome to Student Dashboard")
-    return render(request, 'dashboard.html', contexts)
+def AdminRole(user):
+    return user.role == 1
+
+
+decorators = [login_required]
+# @method_decorator(decorators, name="dispatch")
+# LOGIN_URL = '/login/' # Add this in settings.
+
+@method_decorator(decorators, name="dispatch")
+class Dashboard(View):
+    def get(self, request):    
+        students = Student.objects.all()
+        contexts = {'students': students}
+        # messages.success(request, "Welcome to Student Dashboard")
+        return render(request, 'dashboard.html', contexts)
+
+def home(request):
+    messages.success(request, "Welcome to Home Page.")
+    return render(request, 'home.html')
 
 
 # ------------ Upload Data Starts ------------------
@@ -170,9 +194,56 @@ def student_edit(request, id):
     return render(request, 'student_edit.html', {'student': student})
 
 
+# ---------------------------- Student Delete ------------------------------------
 @login_required(login_url="/")
 def student_delete(request, id):
     student = Student.objects.get(id=id)
     student.delete()
     messages.success(request, "Student record has been deleted successfully")
     return redirect('dashboard')
+
+# ---------------------------- Download Videos ------------------------------------
+
+
+def download_videos(request):
+
+    
+
+    # Example usage
+    # url = "https://www.youtube.com/watch?v=example"
+    # yt = YouTube(url)
+    # stream = yt.streams.first()
+    # stream.download()
+
+
+    if request.method == 'POST':
+        try:
+            link = request.POST.get('link')
+            print('LINK : ', link)
+
+            video = YouTube(link)
+            stream = [x for x in video.streams.filter(progressive=True)]
+            video_qual = video.streams[int(request.POST.get('download-vid')) - 1]
+            video_qual.download(output_path='/Downloads')
+            
+            print('------------------------------ Youtube ----------------------------------')
+            print(video.title)
+            print(video.thumbnail_url)
+            print(video.streams)
+            print('------------------------------ Youtube ----------------------------------')
+
+            # setting video resolution
+            # stream = video.streams.streams.get_by_itag(22)
+
+            # stream.download()
+
+            # # downloads video
+            # stream.download()
+            
+            messages.success(request, "Video has been downloaded successfully")
+            return redirect('download_videos')
+
+        except Exception as e:
+            messages.error(request, "Something went wrong")
+            return HttpResponse(f"{e}")
+    return render(request, 'youtube_download.html')
