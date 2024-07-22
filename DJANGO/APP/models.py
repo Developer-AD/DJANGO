@@ -27,6 +27,10 @@ class MyUser(AbstractUser):
     def __str__(self):
         return self.username
 
+class DemoFiles(models.Model):
+    pdf = models.FileField(upload_to='DemoFiles', null=True, blank=True)
+    image = models.FileField(upload_to='DemoFiles', null=True, blank=True)
+
 
 class Student(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)

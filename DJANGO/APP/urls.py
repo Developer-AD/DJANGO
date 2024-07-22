@@ -18,7 +18,7 @@ urlpatterns = [
     path('student-delete/<int:id>/', views.student_delete),
 
 # ----------------------- New routes --------------------------
-    path('download-videos/', views.download_videos, name='download_videos'),
+    path('send-email/', views.send_email_attachment, name='send_email'),
 
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

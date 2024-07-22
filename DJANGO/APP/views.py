@@ -11,9 +11,9 @@ from datetime import datetime
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.mail import send_mail, EmailMessage
 
 # ------------------------- New Libraries ------------------------
-from pytube import *
 
 
 # -------------------------------------------- Loging Page ------------------------------------
@@ -202,48 +202,51 @@ def student_delete(request, id):
     messages.success(request, "Student record has been deleted successfully")
     return redirect('dashboard')
 
-# ---------------------------- Download Videos ------------------------------------
 
-
-def download_videos(request):
-
-    
-
-    # Example usage
-    # url = "https://www.youtube.com/watch?v=example"
-    # yt = YouTube(url)
-    # stream = yt.streams.first()
-    # stream.download()
-
-
+def send_email_attachment(request):
     if request.method == 'POST':
         try:
-            link = request.POST.get('link')
-            print('LINK : ', link)
-
-            video = YouTube(link)
-            stream = [x for x in video.streams.filter(progressive=True)]
-            video_qual = video.streams[int(request.POST.get('download-vid')) - 1]
-            video_qual.download(output_path='/Downloads')
+            email = request.POST.get('email')
             
-            print('------------------------------ Youtube ----------------------------------')
-            print(video.title)
-            print(video.thumbnail_url)
-            print(video.streams)
-            print('------------------------------ Youtube ----------------------------------')
+            pdf = DemoFiles.objects.first().pdf
+            image = DemoFiles.objects.first().image
 
-            # setting video resolution
-            # stream = video.streams.streams.get_by_itag(22)
-
-            # stream.download()
-
-            # # downloads video
-            # stream.download()
+            # file_path = pdf.path
+            file_path = image.path
             
-            messages.success(request, "Video has been downloaded successfully")
-            return redirect('download_videos')
+            print('------------------------------ Email Start ----------------------------------')
+            print(email)
+            print(pdf)
+            print(image)
+            print(file_path)
+            print('------------------------------ Email Ends ----------------------------------')
+
+            message = 'Test email template to send attachments.'
+            subject = 'Send Attachment'
+            file_name = 'Attachment'
+
+            # ---------------------- Send Normal Email Message --------------------------------
+            # res = send_mail(subject, message,
+            #                 settings.EMAIL_HOST_USER, [email])
+            # return HttpResponse(f'Email Sent : {res}')
+
+
+            # ---------------------- Send Attachment along with Email Message --------------------------------
+            try:
+                mail = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [email])
+                with open(file_path, 'rb') as f:
+                    # mail.attach(file_name, f.read(), 'application/pdf')
+                    mail.attach(file_name, image.read(), 'image/jpeg')
+                    mail.send()
+                    messages.success(request, "Email sent successfully")
+                    return HttpResponse("Email sent successfully")
+
+            except Exception as e:
+                messages.error(request, f"Failed to send email: {e}")
+                return HttpResponse(f"{e}")
+
 
         except Exception as e:
             messages.error(request, "Something went wrong")
             return HttpResponse(f"{e}")
-    return render(request, 'youtube_download.html')
+    return render(request, 'send_email.html')

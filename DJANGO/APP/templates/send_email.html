@@ -18,9 +18,10 @@
         <h2>Download youtube videos</h2>
         <form method="post">
             {% csrf_token %}
-            <label for="link">Enter URL:</label>
-            <input type="text" id="link" name="link"><br><br>
-            <input type="submit" value="Download">
+            <label for="link">Enter Email:</label>
+            <input type="email" id="email" name="email"><br><br>
+            <button type="submit">Send Email</button>
+            
         </form>
 
         <script src="{% static 'js/scripts.js' %}"></script>
