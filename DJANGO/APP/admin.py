@@ -12,9 +12,27 @@ from .models import MyUser, Student, DemoFiles
 #     # prepopulated_fields = #
 
 
+class MyUserAdmin(UserAdmin):
+    model = MyUser
+
+    # list_display = ['username', 'first_name', 'role']
+    fieldsets = (
+        ('Username & Password', {"fields": ('username', 'password', 'role')}),
+        ('Extra Fields', {
+            "fields": ('first_name', 'last_name', 'gender'),
+        }),
+        ('permissions', {
+            "fields": (
+                'is_active',
+                'is_staff',
+                'is_superuser',
+            )
+        }),
+    )
 
 # Register your models here.
+# admin.site.register(MyUser, UserAdmin)
 # admin.site.register(MyUser, CustomAdmin)
-admin.site.register(MyUser, UserAdmin)
+admin.site.register(MyUser, MyUserAdmin)
 admin.site.register(Student)
 admin.site.register(DemoFiles)

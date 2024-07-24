@@ -16,6 +16,8 @@ from django.core.mail import send_mail, EmailMessage
 # ------------------------- New Libraries ------------------------
 
 
+# Implementation of logging in this project.
+
 # -------------------------------------------- Loging Page ------------------------------------
 class Login(View):
     def get(self, request):

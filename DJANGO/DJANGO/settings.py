@@ -76,15 +76,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'DJANGO.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
@@ -189,4 +181,28 @@ SECRET_KEY = '6LeYX9kpAAAAANzL9KJWyaPmH4e98HJmyV4l3akL'
 
 LOGIN_URL = '/login/'
 
-# # ************************************ ADDED_CODE_END **************************************
+# ************************************ Django Database Settings **************************************
+
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
+# ------------- Store All Details In The .env File or Environmental variables.-----------------.
+# Give all models charfield max_length >10. # max_length = 10 : this will occure errors.
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'django_db',
+        'USER': 'scott',
+        'PASSWORD': 'tiger',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
