@@ -1,0 +1,9 @@
+user : abhishek
+pass : abhi@123
+
+user : myadmin
+pass : abhi@123
+
+admin:
+	user : admin
+	pass : abhishek

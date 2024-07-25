@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/login/">Login</a>
+        <a href="/register/">Register</a>
+
+        <a href="/logout/">Logout</a>
+    </div>
+    
+    
+    <script type="application/json" id="django-messages">
+            [{% for message in messages %}"{{ message }}"{% if not forloop.last %}, {% endif %}{% endfor %}]
+    </script>
+
+    
+    <div class="content">
+        <center><h1>Welcome to Admin, {{request.user}}</h1></center>
+        <hr>
+        <h2>Student Details</h2>
+        <!-- <hr> -->
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Age</th>
+                        <th>Profile</th>
+                        <!-- <th>Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>{{student.name}}</td>
+                        <td>{{student.email}}</td>
+                        <td>{{student.phone}}</td>
+                        <td>{{student.age}}</td>
+                        <td>
+                            {% if student.photo %}
+                                <img src="{{student.photo.url}}" width="30px" height="30px" alt="">
+                            {% endif %}   
+                        </td>
+                        <!-- <td>
+                            <a href="/student-edit/{{student.id}}/">
+                                <i>edit</i>
+                            </a>
+
+                            <a href="/student-delete/{{student.id}}/">
+                                <i>delete</i>
+                            </a>
+                        </td> -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+
+</html>
