@@ -49,10 +49,12 @@ def login_page(request):
                 if verify:
                     if user.role == 1:    
                         login(request, user)
+                        messages.success(request, 'You have logged in successfully')
                         return redirect(request.GET.get('next', "admin_dashboard"))
 
                     elif user.role == 2:    
                         login(request, user)
+                        messages.success(request, 'You have logged in successfully')
                         return redirect(request.GET.get('next', "user_dashboard"))
 
                     else:
